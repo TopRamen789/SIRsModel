@@ -27,7 +27,15 @@ namespace SirsModel
             set
             {
                 _s = value;
-                S = Convert.ToInt64(s * N);
+                if (value > 1)
+                {
+                    S = N;
+                }
+                else
+                {
+                    S = Convert.ToInt64(value * N);
+                }
+                
             } 
         }
 
@@ -36,7 +44,14 @@ namespace SirsModel
             set
             {
                 _i = value;
-                I = Convert.ToInt64(i * N);
+                if (value > 1)
+                {
+                    I = N;
+                }
+                else
+                {
+                    I = Convert.ToInt64(value * N);
+                }
             }
         }
         public double r {
@@ -44,14 +59,21 @@ namespace SirsModel
             set
             {
                 _r = value;
-                R = Convert.ToInt64(r * N);
+                if (value > 1)
+                {
+                    R = N;
+                }
+                else
+                {
+                    R = Convert.ToInt64(value * N);
+                }
             }
         }
 
         public GridUnit(long S, long I, long R, long N, int xCoord, int yCoord)
         {
             this.s = S / N;
-            this.i = S / N;
+            this.i = I / N;
             this.r = R / N;
             this.N = N;
             D = 0;

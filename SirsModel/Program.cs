@@ -13,9 +13,9 @@ namespace SirsModel
         public static double totalT { get; set; } = 10;
         public static double sumT = 0;
         public static float k { get; set; } = .05F; // fraction of infected group that will recover
-        public static float b { get; set; } = 20;
+        public static float b { get; set; } = .5F;
         public static float deathRate { get; set; } = .02F;// odds of an infected person dying after leaving the infected group (infectious, really)
-        public static float borderTravelRate = 01F;
+        public static float borderTravelRate = .01F;
         public static List<GridUnit> activeGridUnits = new List<GridUnit>();
         public static int gridXLength = 3;
         public static int gridYLength = 3;
@@ -45,16 +45,33 @@ namespace SirsModel
 
             while (sumT < totalT) 
             {
-
+                Console.WriteLine("-----------------------");
+                for (int i = 0; i < gridXLength; i++)
+                {
+                    for (int j = 0; j < gridYLength; j++)
+                    {
+                        if (array[i,j].I > 0)
+                        {
+                            Console.Write("X");
+                        }
+                        else
+                        {
+                            Console.Write(" ");
+                        }
+                    }
+                    Console.Write("\n");                    
+                }
+                Console.WriteLine("-----------------------");
                 //for each grid, call doIteration if I is not 0;
-                for (int i = 0; i < activeGridUnits.Count - 1; i++)
+                int current = activeGridUnits.Count;
+                for (int i = 0; i < activeGridUnits.Count; i++)
                 {
                     GridUnit temp = doIteration(activeGridUnits.ElementAt(i), deltaT);
                     overWriteGrid(i, temp);
                 }
 
                 //for each grid, call calculateSpreadToNeighbors() on it
-                for (int i = 0; i <activeGridUnits.Count - 1; i++)
+                for (int i = 0; i < current; i++)
                 {
                     calculateSpreadToNeighbors(activeGridUnits.ElementAt(i), borderTravelRate);
                 }
@@ -93,9 +110,9 @@ namespace SirsModel
             double rPrime = k * grid.i;
 
             // apply the change to the population 
-            grid.s += Convert.ToInt64(sPrime * deltaT);
-            grid.i += Convert.ToInt64(iPrime * deltaT);
-            grid.r += Convert.ToInt64(rPrime * deltaT);
+            grid.s += (sPrime * deltaT);
+            grid.i += (iPrime * deltaT);
+            grid.r += (rPrime * deltaT);
 
             // calculate losses
             long theDead = Convert.ToInt64(rPrime * deltaT * deathRate);
@@ -116,12 +133,12 @@ namespace SirsModel
 
             long infectedOut = Convert.ToInt64(centerGrid.i * borderTravelRate * centerGrid.N);
             long recoveredOut = Convert.ToInt64(centerGrid.r * borderTravelRate * centerGrid.N);
-            long susceptableOut = Convert.ToInt64(centerGrid.r * borderTravelRate * centerGrid.N);
+            long susceptableOut = Convert.ToInt64(centerGrid.s * borderTravelRate * centerGrid.N);
 
             // readjust populations due to people leaving
             
             // calculate each direction
-            if (centerGrid.yCoord <= 0) // go down
+            if (!(centerGrid.yCoord <= 0)) // go down
             {
                 GridUnit target = array[centerGrid.xCoord, centerGrid.yCoord - 1];
                 if (target.N > 0)
@@ -132,21 +149,21 @@ namespace SirsModel
                     }
 
                     target.N += infectedOut + recoveredOut + susceptableOut;
-                    target.i += infectedOut / target.N;
-                    target.r += recoveredOut / target.N;
-                    target.s += susceptableOut / target.N;
+                    target.i += Convert.ToSingle(infectedOut) / target.N;
+                    target.r += Convert.ToSingle(recoveredOut) / target.N;
+                    target.s += Convert.ToSingle(susceptableOut) / target.N;
 
                     overWriteGrid(target);
 
                     centerGrid.N -= infectedOut + recoveredOut + susceptableOut;
-                    centerGrid.i -= infectedOut / centerGrid.N;
-                    centerGrid.r -= recoveredOut / centerGrid.N;
-                    centerGrid.s -= susceptableOut / centerGrid.N;
+                    centerGrid.i -= Convert.ToSingle(infectedOut) / centerGrid.N;
+                    centerGrid.r -= Convert.ToSingle(recoveredOut) / centerGrid.N;
+                    centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
 
                     overWriteGrid(centerGrid);
                 }
             }
-            if (centerGrid.yCoord >= gridYLength - 1) // go up
+            if (!(centerGrid.yCoord >= gridYLength - 1)) // go up
             {
                 GridUnit target = array[centerGrid.xCoord, centerGrid.yCoord + 1];
                 if (target.N > 0)
@@ -158,21 +175,21 @@ namespace SirsModel
                     }
 
                     target.N += infectedOut + recoveredOut + susceptableOut;
-                    target.i += infectedOut / target.N;
-                    target.r += recoveredOut / target.N;
-                    target.s += susceptableOut / target.N;
+                    target.i += Convert.ToSingle(infectedOut) / target.N;
+                    target.r += Convert.ToSingle(recoveredOut) / target.N;
+                    target.s += Convert.ToSingle(susceptableOut) / target.N;
 
                     overWriteGrid(target);
 
                     centerGrid.N -= infectedOut + recoveredOut + susceptableOut;
-                    centerGrid.i -= infectedOut / centerGrid.N;
-                    centerGrid.r -= recoveredOut / centerGrid.N;
-                    centerGrid.s -= susceptableOut / centerGrid.N;
+                    centerGrid.i -= Convert.ToSingle(infectedOut) / centerGrid.N;
+                    centerGrid.r -= Convert.ToSingle(recoveredOut) / centerGrid.N;
+                    centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
 
                     overWriteGrid(centerGrid);
                 }
             }
-            if (centerGrid.xCoord <= 0) // go left
+            if (!(centerGrid.xCoord <= 0)) // go left
             {
                 GridUnit target = array[centerGrid.xCoord - 1, centerGrid.yCoord];
                 if (target.N > 0)
@@ -183,21 +200,21 @@ namespace SirsModel
                     }
 
                     target.N += infectedOut + recoveredOut + susceptableOut;
-                    target.i += infectedOut / target.N;
-                    target.r += recoveredOut / target.N;
-                    target.s += susceptableOut / target.N;
+                    target.i += Convert.ToSingle(infectedOut) / target.N;
+                    target.r += Convert.ToSingle(recoveredOut) / target.N;
+                    target.s += Convert.ToSingle(susceptableOut) / target.N;
 
                     overWriteGrid(target);
 
                     centerGrid.N -= infectedOut + recoveredOut + susceptableOut;
-                    centerGrid.i -= infectedOut / centerGrid.N;
-                    centerGrid.r -= recoveredOut / centerGrid.N;
-                    centerGrid.s -= susceptableOut / centerGrid.N;
+                    centerGrid.i -= Convert.ToSingle(infectedOut) / centerGrid.N;
+                    centerGrid.r -= Convert.ToSingle(recoveredOut) / centerGrid.N;
+                    centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
 
                     overWriteGrid(centerGrid);
                 }
             }
-            if (centerGrid.xCoord >= gridXLength - 1) // go right
+            if (!(centerGrid.xCoord >= gridXLength - 1)) // go right
             {
                 GridUnit target = array[centerGrid.xCoord + 1, centerGrid.yCoord];
                 if (target.N > 0)
@@ -208,16 +225,16 @@ namespace SirsModel
                     }
 
                     target.N += infectedOut + recoveredOut + susceptableOut;
-                    target.i += infectedOut / target.N;
-                    target.r += recoveredOut / target.N;
-                    target.s += susceptableOut / target.N;
+                    target.i += Convert.ToSingle(infectedOut) / target.N;
+                    target.r += Convert.ToSingle(recoveredOut) / target.N;
+                    target.s += Convert.ToSingle(susceptableOut) / target.N;
 
                     overWriteGrid(target);
 
                     centerGrid.N -= infectedOut + recoveredOut + susceptableOut;
-                    centerGrid.i -= infectedOut / centerGrid.N;
-                    centerGrid.r -= recoveredOut / centerGrid.N;
-                    centerGrid.s -= susceptableOut / centerGrid.N;
+                    centerGrid.i -= Convert.ToSingle(infectedOut) / centerGrid.N;
+                    centerGrid.r -= Convert.ToSingle(recoveredOut) / centerGrid.N;
+                    centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
 
                     overWriteGrid(centerGrid);
                 }
