@@ -63,13 +63,13 @@ namespace SirsModel
                 }
                 Console.WriteLine("-----------------------");
                 //for each grid, call doIteration if I is not 0;
-                int current = activeGridUnits.Count;
+                
                 for (int i = 0; i < activeGridUnits.Count; i++)
                 {
                     GridUnit temp = doIteration(activeGridUnits.ElementAt(i), deltaT);
-                    overWriteGrid(i, temp);
+                    //overWriteGrid(i, temp);
                 }
-
+                int current = activeGridUnits.Count;
                 //for each grid, call calculateSpreadToNeighbors() on it
                 for (int i = 0; i < current; i++)
                 {
@@ -115,7 +115,7 @@ namespace SirsModel
             grid.r += (rPrime * deltaT);
 
             // calculate losses
-            long theDead = Convert.ToInt64(rPrime * deltaT * deathRate);
+            long theDead = Convert.ToInt64(rPrime * grid.N * deltaT * deathRate);
             grid.D += theDead;
             grid.N -= theDead; // remove losses from total population, needs testing.]
 
@@ -143,10 +143,7 @@ namespace SirsModel
                 GridUnit target = array[centerGrid.xCoord, centerGrid.yCoord - 1];
                 if (target.N > 0)
                 {
-                    if (!(activeGridUnits.Contains(target)))
-                    {
-                        activeGridUnits.Add(target);
-                    }
+                    
 
                     target.N += infectedOut + recoveredOut + susceptableOut;
                     target.i += Convert.ToSingle(infectedOut) / target.N;
@@ -161,6 +158,10 @@ namespace SirsModel
                     centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
 
                     overWriteGrid(centerGrid);
+                    if (target.I > 0 && (!activeGridUnits.Contains(target)))
+                    { 
+                        activeGridUnits.Add(target);
+                    }
                 }
             }
             if (!(centerGrid.yCoord >= gridYLength - 1)) // go up
@@ -169,10 +170,7 @@ namespace SirsModel
                 if (target.N > 0)
                 {
 
-                    if (!(activeGridUnits.Contains(target)))
-                    {
-                        activeGridUnits.Add(target);
-                    }
+
 
                     target.N += infectedOut + recoveredOut + susceptableOut;
                     target.i += Convert.ToSingle(infectedOut) / target.N;
@@ -187,6 +185,11 @@ namespace SirsModel
                     centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
 
                     overWriteGrid(centerGrid);
+
+                    if (target.I > 0 && (!activeGridUnits.Contains(target)))
+                    {
+                        activeGridUnits.Add(target);
+                    }
                 }
             }
             if (!(centerGrid.xCoord <= 0)) // go left
@@ -194,10 +197,6 @@ namespace SirsModel
                 GridUnit target = array[centerGrid.xCoord - 1, centerGrid.yCoord];
                 if (target.N > 0)
                 {
-                    if (!(activeGridUnits.Contains(target)))
-                    {
-                        activeGridUnits.Add(target);
-                    }
 
                     target.N += infectedOut + recoveredOut + susceptableOut;
                     target.i += Convert.ToSingle(infectedOut) / target.N;
@@ -212,6 +211,11 @@ namespace SirsModel
                     centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
 
                     overWriteGrid(centerGrid);
+
+                    if (target.I > 0 && (!activeGridUnits.Contains(target)))
+                    {
+                        activeGridUnits.Add(target);
+                    }
                 }
             }
             if (!(centerGrid.xCoord >= gridXLength - 1)) // go right
@@ -219,10 +223,6 @@ namespace SirsModel
                 GridUnit target = array[centerGrid.xCoord + 1, centerGrid.yCoord];
                 if (target.N > 0)
                 {
-                    if (!(activeGridUnits.Contains(target)))
-                    {
-                        activeGridUnits.Add(target);
-                    }
 
                     target.N += infectedOut + recoveredOut + susceptableOut;
                     target.i += Convert.ToSingle(infectedOut) / target.N;
@@ -237,6 +237,11 @@ namespace SirsModel
                     centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
 
                     overWriteGrid(centerGrid);
+
+                    if (target.I > 0 && (!activeGridUnits.Contains(target)))
+                    {
+                        activeGridUnits.Add(target);
+                    }
                 }
             }
         }
