@@ -4,28 +4,39 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace SirsModel
 {
     class Program
     {
 
-        public static double deltaT { get; set; } = 1;
-        public static double totalT { get; set; } = 10;
+        public static double deltaT { get; set; }
+        public static double totalT { get; set; }
         public static double sumT = 0;
-        public static float k { get; set; } = .05F; // fraction of infected group that will recover
-        public static float b { get; set; } = .5F;
-        public static float deathRate { get; set; } = .02F;// odds of an infected person dying after leaving the infected group (infectious, really)
+        public static float k { get; set; } // fraction of infected group that will recover
+        public static float b { get; set; }
+        public static float deathRate { get; set; } // odds of an infected person dying after leaving the infected group (infectious, really)
         public static float borderTravelRate = .01F;
         public static List<GridUnit> activeGridUnits = new List<GridUnit>();
-        public static int gridXLength = 3;
-        public static int gridYLength = 3;
+        public static int gridXLength = 20;
+        public static int gridYLength = 20;
         public static GridUnit[,] array = new GridUnit[gridXLength, gridYLength];
-
+        public static DataParser parser = new DataParser();
         static void Main(string[] args)
         {
+            deltaT = 1;
+            totalT = 100;
+            k = .1F;
+            b = .5F;
+            deathRate = .2F;
+
+            // parse the data
+            parser.parseCSV("input.txt", "output.txt");
 
             // fill the array
             
+
+
             for (int i = 0; i < gridXLength; i++)
             {
                 for (int j = 0; j < gridYLength; j++)
@@ -66,7 +77,7 @@ namespace SirsModel
                 
                 for (int i = 0; i < activeGridUnits.Count; i++)
                 {
-                    GridUnit temp = doIteration(activeGridUnits.ElementAt(i), deltaT);
+                    doIteration(activeGridUnits.ElementAt(i), deltaT);
                     //overWriteGrid(i, temp);
                 }
                 int current = activeGridUnits.Count;
@@ -80,10 +91,10 @@ namespace SirsModel
                 sumT += deltaT;
             }
 
-
+            int ifasdf = 0;
         }
 
-        public static GridUnit doIteration(GridUnit grid, double deltaT)
+        public static void doIteration(GridUnit grid, double deltaT)
         {
 
             /*
@@ -123,8 +134,6 @@ namespace SirsModel
             {
                 activeGridUnits.Remove(grid);
             }
-
-            return grid;
         }
 
         public static void calculateSpreadToNeighbors(GridUnit centerGrid, float borderTravelRate) // spreads infection out, one way, from each infected grid
@@ -150,8 +159,6 @@ namespace SirsModel
                     target.r += Convert.ToSingle(recoveredOut) / target.N;
                     target.s += Convert.ToSingle(susceptableOut) / target.N;
 
-                    overWriteGrid(target);
-
                     centerGrid.N -= infectedOut + recoveredOut + susceptableOut;
                     centerGrid.i -= Convert.ToSingle(infectedOut) / centerGrid.N;
                     centerGrid.r -= Convert.ToSingle(recoveredOut) / centerGrid.N;
@@ -170,21 +177,15 @@ namespace SirsModel
                 if (target.N > 0)
                 {
 
-
-
                     target.N += infectedOut + recoveredOut + susceptableOut;
                     target.i += Convert.ToSingle(infectedOut) / target.N;
                     target.r += Convert.ToSingle(recoveredOut) / target.N;
                     target.s += Convert.ToSingle(susceptableOut) / target.N;
 
-                    overWriteGrid(target);
-
                     centerGrid.N -= infectedOut + recoveredOut + susceptableOut;
                     centerGrid.i -= Convert.ToSingle(infectedOut) / centerGrid.N;
                     centerGrid.r -= Convert.ToSingle(recoveredOut) / centerGrid.N;
                     centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
-
-                    overWriteGrid(centerGrid);
 
                     if (target.I > 0 && (!activeGridUnits.Contains(target)))
                     {
@@ -203,14 +204,10 @@ namespace SirsModel
                     target.r += Convert.ToSingle(recoveredOut) / target.N;
                     target.s += Convert.ToSingle(susceptableOut) / target.N;
 
-                    overWriteGrid(target);
-
                     centerGrid.N -= infectedOut + recoveredOut + susceptableOut;
                     centerGrid.i -= Convert.ToSingle(infectedOut) / centerGrid.N;
                     centerGrid.r -= Convert.ToSingle(recoveredOut) / centerGrid.N;
                     centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
-
-                    overWriteGrid(centerGrid);
 
                     if (target.I > 0 && (!activeGridUnits.Contains(target)))
                     {
@@ -229,14 +226,10 @@ namespace SirsModel
                     target.r += Convert.ToSingle(recoveredOut) / target.N;
                     target.s += Convert.ToSingle(susceptableOut) / target.N;
 
-                    overWriteGrid(target);
-
                     centerGrid.N -= infectedOut + recoveredOut + susceptableOut;
                     centerGrid.i -= Convert.ToSingle(infectedOut) / centerGrid.N;
                     centerGrid.r -= Convert.ToSingle(recoveredOut) / centerGrid.N;
                     centerGrid.s -= Convert.ToSingle(susceptableOut) / centerGrid.N;
-
-                    overWriteGrid(centerGrid);
 
                     if (target.I > 0 && (!activeGridUnits.Contains(target)))
                     {

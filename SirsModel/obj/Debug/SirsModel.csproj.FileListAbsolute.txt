@@ -4,3 +4,9 @@ c:\users\andrew\documents\visual studio 2015\Projects\SirsModel\SirsModel\bin\De
 c:\users\andrew\documents\visual studio 2015\Projects\SirsModel\SirsModel\obj\Debug\SirsModel.csprojResolveAssemblyReference.cache
 c:\users\andrew\documents\visual studio 2015\Projects\SirsModel\SirsModel\obj\Debug\SirsModel.exe
 c:\users\andrew\documents\visual studio 2015\Projects\SirsModel\SirsModel\obj\Debug\SirsModel.pdb
+C:\Users\Grant\Documents\GitHub\SIRsModel\SIRsModel\SirsModel\bin\Debug\SirsModel.exe.config
+C:\Users\Grant\Documents\GitHub\SIRsModel\SIRsModel\SirsModel\bin\Debug\SirsModel.exe
+C:\Users\Grant\Documents\GitHub\SIRsModel\SIRsModel\SirsModel\bin\Debug\SirsModel.pdb
+C:\Users\Grant\Documents\GitHub\SIRsModel\SIRsModel\SirsModel\obj\Debug\SirsModel.csprojResolveAssemblyReference.cache
+C:\Users\Grant\Documents\GitHub\SIRsModel\SIRsModel\SirsModel\obj\Debug\SirsModel.exe
+C:\Users\Grant\Documents\GitHub\SIRsModel\SIRsModel\SirsModel\obj\Debug\SirsModel.pdb
